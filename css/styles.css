@@ -2503,13 +2503,13 @@ fieldset:disabled a.btn {
 }
 .btn-success:hover {
   color: #fff;
-  background-color: #218838;
-  border-color: #1e7e34;
+  background-color: #5706c0;
+  border-color: #5706c0;
 }
 .btn-success:focus, .btn-success.focus {
   color: #fff;
-  background-color: #218838;
-  border-color: #1e7e34;
+  background-color: #5706c0;
+  border-color: #5706c0;
   box-shadow: 0 0 0 0.2rem rgba(72, 180, 97, 0.5);
 }
 .btn-success.disabled, .btn-success:disabled {
@@ -4712,7 +4712,7 @@ a.badge-secondary:focus, a.badge-secondary.focus {
 }
 a.badge-success:hover, a.badge-success:focus {
   color: #fff;
-  background-color: #1e7e34;
+  background-color: #5706c0;
 }
 a.badge-success:focus, a.badge-success.focus {
   outline: 0;
@@ -6099,7 +6099,7 @@ button.bg-secondary:focus {
 a.bg-success:hover, a.bg-success:focus,
 button.bg-success:hover,
 button.bg-success:focus {
-  background-color: #1e7e34 !important;
+  background-color: #5706c0 !important;
 }
 
 .bg-info {
@@ -10190,6 +10190,21 @@ h3 {
 .portfolio-modal .portfolio-modal-title {
   font-size: 2.25rem;
   line-height: 2rem;
+}
+
+.github-button a {
+  background-color: 5706c0;
+  color: #fff;
+  padding: 0.5rem 1rem;
+  border-radius: 8px;
+  text-decoration: none;
+  font-weight: bold;
+}
+
+.github-button a:hover {
+  color: #fff;
+  background-color: #390281;
+  border-color: #28015a;
 }
 
 @media (min-width: 992px) {
