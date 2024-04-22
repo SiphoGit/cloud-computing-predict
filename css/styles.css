@@ -596,7 +596,7 @@ pre code {
 .col-md-auto, .col-md-12, .col-md-11, .col-md-10, .col-md-9, .col-md-8, .col-md-7, .col-md-6, .col-md-5, .col-md-4, .col-md-3, .col-md-2, .col-md-1, .col-sm,
 .col-sm-auto, .col-sm-12, .col-sm-11, .col-sm-10, .col-sm-9, .col-sm-8, .col-sm-7, .col-sm-6, .col-sm-5, .col-sm-4, .col-sm-3, .col-sm-2, .col-sm-1, .col,
 .col-auto, .col-12, .col-11, .col-10, .col-9, .col-8, .col-7, .col-6, .col-5, .col-4, .col-3, .col-2, .col-1 {
-  position: relative;
+  position: center;
   width: 100%;
   padding-right: 1.5rem;
   padding-left: 1.5rem;
@@ -10136,7 +10136,7 @@ h3 {
   border-radius: 50%;
   background-color: #ffe1bf;
   transform: rotateZ(-5deg);
-  margin-bottom: 5;
+  margin-bottom: 5rem;
   
 }
 
@@ -10191,6 +10191,7 @@ h3 {
   font-size: 2.25rem;
   line-height: 2rem;
 }
+
 @media (min-width: 992px) {
   .portfolio-modal .portfolio-modal-title {
     font-size: 3rem;
