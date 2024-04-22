@@ -10141,6 +10141,8 @@ h3 {
 }
 
 #skills li {
+  list-style-type: none;
+  display: inline;
   background-color: white;
   color: #390281;
   padding: 0.5rem 1rem;
