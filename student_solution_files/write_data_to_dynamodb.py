@@ -18,6 +18,7 @@
 import boto3    # Python AWS SDK
 import json     # Used for handling API-based data.
 import base64   # Needed to decode the incoming POST data
+import random
 
 def lambda_handler(event, context):
     
@@ -34,28 +35,29 @@ def lambda_handler(event, context):
     # on a unique value to prevent errors when writing to DynamoDB. **
     
     # --- Insert your code here ---
-    rid = None # <--- Replace this value with your code.
+    
+    rid = random.randint(1, 1000000000) # <--- Replace this value with your code.
     # -----------------------------
     
     # ** Instantiate the DynamoDB service with the help of the boto3 library **
     
     # --- Insert your code here ---
-    dynamodb = None # <--- Replace this value with your code.
+    dynamodb = boto3.resource('dynamodb') # <--- Replace this value with your code.
     # -----------------------------
     
     # Instantiate the table. Remember pass the name of the DynamoDB table created in step 4
-    table = dynamodb.Table('# Insert the name of your generated DynamoDB table here')
+    table = dynamodb.Table('2401FT-SIPSHI-portfolio-data-table')
     
     # ** Write the responses to the table using the put_item method. **
 
     # Complete the below code so that the appropriate 
     # incoming data is sent to the matching column in your DynamoDB table
     # --- Insert your code here ---
-    db_response = table.put_item(Item={'ResponsesID': None, # <--- Insert the correct variable
-                        'Name': None, # <--- Insert the correct variable
-                        'Email': None, # <--- Insert the correct variable
-                        'Cell': None, # <--- Insert the correct variable
-                        'Message': None # <--- Insert the correct variable
+    db_response = table.put_item(Item={'ResponsesID': rid, # <--- Insert the correct variable
+                        'Name': dec_dict["Name"], # <--- Insert the correct variable
+                        'Email': dec_dict["Email"], # <--- Insert the correct variable
+                        'Cell': dec_dict["Cell"], # <--- Insert the correct variable
+                        'Message': dec_dict["Message"] # <--- Insert the correct variable
     })
     # -----------------------------
 
