@@ -20,11 +20,13 @@
         to craft an intelligent response.
 
 """
+from find_maximum_sentiment import find_max_sentiment
+from find_key_phrases import key_phrase_finder
 
 def email_response(name, critical_phrase_list, list_of_extracted_phrases, AWS_Comprehend_Sentiment_Dump):
 
     # Function Constants
-    SENDER_NAME = 'Place your name here'
+    SENDER_NAME = 'Sipho'
     
     # --- Check for the sentiment of the message and find dominant sentiment score ---
     Sentiment_finder = find_max_sentiment(AWS_Comprehend_Sentiment_Dump)
