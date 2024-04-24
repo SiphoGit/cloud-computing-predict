@@ -19,20 +19,42 @@ import boto3    # Python AWS SDK
 import json     # Used for handling API-based data.
 import base64   # Needed to decode the incoming POST data
 import numpy as np # Array manipulation
+from email_responses import email_response
+from write_data_to_dynamodb import lambda_handler as write_data_to_dynamodb
+from basic_lambda_data_decoding import lambda_handler as user_input_decoder
 # <<< You will need to add additional libraries to complete this script >>> 
 
 # ** Insert key phrases function **
-# --- Insert your code here ---
+def comprehend_extract_key_phrases(event, service):
+    # Perform JSON data decoding 
+    body_enc = event['body']
+    dec_dict = json.loads(base64.b64decode(body_enc))
+    
+    response = service.detect_key_phrases(
+        Text=dec_dict["Message"],
+        LanguageCode='en'
+    )   
+    return response
 
 # -----------------------------
 
 # ** Insert sentiment extraction function **
-# --- Insert your code here ---
+def comprehend_extract_sentiment(event, service_name):
+    # Perform JSON data decoding 
+    body_enc = event['body']
+    dec_dict = json.loads(base64.b64decode(body_enc))
+    
+    response = service_name.detect_sentiment(
+        Text=dec_dict["Message"],
+        LanguageCode='en'
+    )   
+    return response
  
 # -----------------------------
 
 # ** Insert email responses function **
-# --- Insert your code here ---
+def send_email():
+    pass
  
 # -----------------------------
 
@@ -51,7 +73,7 @@ def lambda_handler(event, context):
 
 
     # Do not change the name of this variable
-    db_response = None
+    db_response = write_data_to_dynamodb(event, context)
     # -----------------------------
     
 
@@ -59,15 +81,15 @@ def lambda_handler(event, context):
     comprehend = boto3.client(service_name='comprehend')
     
     # --- Insert your code here ---
-    enquiry_text = None # <--- Insert code to place the website message into this variable
+    enquiry_text = user_input_decoder(event, context) # <--- Insert code to place the website message into this variable
     # -----------------------------
     
     # --- Insert your code here ---
-    sentiment = None # <---Insert code to get the sentiment with AWS comprehend
+    sentiment = comprehend_extract_sentiment(enquiry_text, comprehend) # <---Insert code to get the sentiment with AWS comprehend
     # -----------------------------
     
     # --- Insert your code here ---
-    key_phrases = None # <--- Insert code to get the key phrases with AWS comprehend
+    key_phrases = comprehend_extract_key_phrases(enquiry_text, comprehend) # <--- Insert code to get the key phrases with AWS comprehend
     # -----------------------------
     
     # Get list of phrases in numpy array
@@ -80,7 +102,8 @@ def lambda_handler(event, context):
     # <<< Ensure that the response text is stored in the variable `email_text` >>> 
     # --- Insert your code here ---
     # Do not change the name of this variable
-    email_text = None 
+    name = dec_dict["Name"]
+    email_text = email_response(name,phrase,  )
 
     
     # -----------------------------
@@ -94,7 +117,7 @@ def lambda_handler(event, context):
     # --- Insert your code here ---
 
     # Do not change the name of this variable
-    ses_response = None
+    ses_response = send_email(email_text)
     
     # ...
 
