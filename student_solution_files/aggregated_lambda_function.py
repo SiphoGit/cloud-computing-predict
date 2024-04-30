@@ -24,46 +24,32 @@ from botocore.exceptions import ClientError
 from email_responses import email_response
 from write_data_to_dynamodb import lambda_handler as write_data_to_dynamodb
 from basic_lambda_data_decoding import lambda_handler as user_input_decoder
-# <<< You will need to add additional libraries to complete this script >>> 
 
-# ** Insert key phrases function **
-def comprehend_extract_key_phrases(event, service):
-    # Perform JSON data decoding 
-    body_enc = event['body']
-    dec_dict = json.loads(base64.b64decode(body_enc))
-    
+# Get key phrases
+def comprehend_extract_key_phrases(enquiry_text, service):
     response = service.detect_key_phrases(
-        Text=dec_dict["message"],
+        Text=enquiry_text,
         LanguageCode='en'
     )   
     return response
 
-# -----------------------------
-
-# ** Insert sentiment extraction function **
-def comprehend_extract_sentiment(event, service_name):
-    # Perform JSON data decoding 
-    body_enc = event['body']
-    dec_dict = json.loads(base64.b64decode(body_enc))
-    
+# Extract sentiment 
+def comprehend_extract_sentiment(enquiry_text, service_name):
     response = service_name.detect_sentiment(
-        Text=dec_dict["message"],
+        Text=enquiry_text,
         LanguageCode='en'
     )   
     return response
  
-# -----------------------------
-
-# ** Insert email responses function **
+# Send automated emails
 def send_email(recipient, subject, body):
     client = boto3.client('ses')
     
     SENDER = 'shimanges1@gmail.com'
     CHARSET = "UTF-8"
     
-     # Try to send the email.
+    # Try to send the email.
     try:
-        #Provide the contents of the email.
         ses_response = client.send_email(
             Destination={
                 'ToAddresses': [
@@ -93,39 +79,29 @@ def send_email(recipient, subject, body):
     else:
         print("Email sent! Message ID:"),
         print(ses_response['MessageId'])
- 
-# -----------------------------
 
 # Lambda function orchestrating the entire predict logic
 def lambda_handler(event, context):
-    
     # Perform JSON data decoding 
     body_enc = event['body']
     dec_dict = json.loads(base64.b64decode(body_enc))
     
-    # ** Insert code to write to dynamodb **
-    # <<< Ensure that the DynamoDB write response object is saved 
-    #    as the variable `db_response` >>> 
-    # --- Insert your code here ---
-
-
+    # Write data to DynamoDB
     # Do not change the name of this variable
     db_response = write_data_to_dynamodb(event, context)
-    # -----------------------------
     
-    # --- Amazon Comprehend ---
+    # --- Amazon Comprehend object---
     comprehend = boto3.client(service_name='comprehend')
     
-    # --- Insert your code here ---
-    enquiry_text = user_input_decoder(event, context) # <--- Insert code to place the website message into this variable
+    # Decode data entered by user
+    enquiry_text = user_input_decoder(event, context)
+    
+    # Get sentiment using AWS comprehend
+    sentiment = comprehend_extract_sentiment(enquiry_text, comprehend) 
     # -----------------------------
     
-    # --- Insert your code here ---
-    sentiment = comprehend_extract_sentiment(enquiry_text, comprehend) # <---Insert code to get the sentiment with AWS comprehend
-    # -----------------------------
-    
-    # --- Insert your code here ---
-    key_phrases = comprehend_extract_key_phrases(enquiry_text, comprehend) # <--- Insert code to get the key phrases with AWS comprehend
+    # Extract key phrases using AWS comprehend
+    key_phrases = comprehend_extract_key_phrases(enquiry_text, comprehend) 
     # -----------------------------
     
     # Get list of phrases in numpy array
@@ -138,20 +114,18 @@ def lambda_handler(event, context):
     # <<< Ensure that the response text is stored in the variable `email_text` >>> 
     # --- Insert your code here ---
     article_critical_phrase_list = ['article','Article',
-                                    'blog', 'Blog']
+                                    'blog', 'Blog', 
+                                    'post', 'Post']
     
     # Do not change the name of this variable
-    name = dec_dict["Name"]
+    name = dec_dict['name']
     email_text = email_response(name, article_critical_phrase_list, phrase, sentiment)
 
     # -----------------------------
             
     # ** SES Functionality **
 
-    # Insert code to send an email, using AWS SES, with the above defined 
-    # `email_text` variable as it's body.
-    # <<< Ensure that the SES service response is stored in the variable `ses_response` >>> 
-    # --- Insert your code here ---
+    # Send an email, using AWS SES, 
     recipient = 'shimanges1@gmail.com'
 
     # Do not modify the email subject line
@@ -183,8 +157,3 @@ def lambda_handler(event, context):
     # -----------------------------
     
     return lambda_response   
-    
-
-
-
-
