@@ -58,7 +58,7 @@ def comprehend_extract_sentiment(event, service_name):
 def send_email(recipient, subject, body):
     client = boto3.client('ses')
     
-    SENDER = 'shianges@yahoo.com'
+    SENDER = 'shimanges1@gmail.com'
     CHARSET = "UTF-8"
     
      # Try to send the email.
@@ -152,7 +152,7 @@ def lambda_handler(event, context):
     # `email_text` variable as it's body.
     # <<< Ensure that the SES service response is stored in the variable `ses_response` >>> 
     # --- Insert your code here ---
-    recipient = 'shimanges@yaoo.com'
+    recipient = 'shimanges1@gmail.com'
 
     # Do not modify the email subject line
     SUBJECT = f"Data Science Portfolio Project Website - Hello {dec_dict['name']}"
