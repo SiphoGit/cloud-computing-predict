@@ -19,6 +19,8 @@ import boto3    # Python AWS SDK
 import json     # Used for handling API-based data.
 import base64   # Needed to decode the incoming POST data
 import numpy as np # Array manipulation
+from botocore.exceptions import ClientError
+
 from email_responses import email_response
 from write_data_to_dynamodb import lambda_handler as write_data_to_dynamodb
 from basic_lambda_data_decoding import lambda_handler as user_input_decoder
@@ -31,7 +33,7 @@ def comprehend_extract_key_phrases(event, service):
     dec_dict = json.loads(base64.b64decode(body_enc))
     
     response = service.detect_key_phrases(
-        Text=dec_dict["Message"],
+        Text=dec_dict["message"],
         LanguageCode='en'
     )   
     return response
@@ -45,7 +47,7 @@ def comprehend_extract_sentiment(event, service_name):
     dec_dict = json.loads(base64.b64decode(body_enc))
     
     response = service_name.detect_sentiment(
-        Text=dec_dict["Message"],
+        Text=dec_dict["message"],
         LanguageCode='en'
     )   
     return response
@@ -53,8 +55,44 @@ def comprehend_extract_sentiment(event, service_name):
 # -----------------------------
 
 # ** Insert email responses function **
-def send_email():
-    pass
+def send_email(recipient, subject, body):
+    client = boto3.client('ses')
+    
+    SENDER = 'shianges@yahoo.com'
+    CHARSET = "UTF-8"
+    
+     # Try to send the email.
+    try:
+        #Provide the contents of the email.
+        ses_response = client.send_email(
+            Destination={
+                'ToAddresses': [
+                    recipient,
+                    # 'edsa.predicts@explore-ai.net', # <--- Uncomment this line once you have successfully tested your predict end-to-end
+                ],
+            },
+            Message={
+                'Body': {
+
+                    'Text': {
+                        'Charset': CHARSET,
+                        'Data': body,
+                    },
+                },
+                'Subject': {
+                    'Charset': CHARSET,
+                    'Data': subject,
+                },
+            },
+            Source=SENDER,
+        )
+
+    # Display an error if something goes wrong.	
+    except ClientError as e:
+        print(e.response['Error']['Message'])
+    else:
+        print("Email sent! Message ID:"),
+        print(ses_response['MessageId'])
  
 # -----------------------------
 
@@ -65,7 +103,6 @@ def lambda_handler(event, context):
     body_enc = event['body']
     dec_dict = json.loads(base64.b64decode(body_enc))
     
-
     # ** Insert code to write to dynamodb **
     # <<< Ensure that the DynamoDB write response object is saved 
     #    as the variable `db_response` >>> 
@@ -76,7 +113,6 @@ def lambda_handler(event, context):
     db_response = write_data_to_dynamodb(event, context)
     # -----------------------------
     
-
     # --- Amazon Comprehend ---
     comprehend = boto3.client(service_name='comprehend')
     
@@ -101,31 +137,32 @@ def lambda_handler(event, context):
     # ** Use the `email_response` function to generate the text for your email response **
     # <<< Ensure that the response text is stored in the variable `email_text` >>> 
     # --- Insert your code here ---
+    article_critical_phrase_list = ['article','Article',
+                                    'blog', 'Blog']
+    
     # Do not change the name of this variable
     name = dec_dict["Name"]
-    email_text = email_response(name,phrase,  )
+    email_text = email_response(name, article_critical_phrase_list, phrase, sentiment)
 
-    
     # -----------------------------
             
-
     # ** SES Functionality **
 
     # Insert code to send an email, using AWS SES, with the above defined 
     # `email_text` variable as it's body.
     # <<< Ensure that the SES service response is stored in the variable `ses_response` >>> 
     # --- Insert your code here ---
-
-    # Do not change the name of this variable
-    ses_response = send_email(email_text)
-    
-    # ...
+    recipient = 'shimanges@yaoo.com'
 
     # Do not modify the email subject line
     SUBJECT = f"Data Science Portfolio Project Website - Hello {dec_dict['name']}"
+    
+    # Do not change the name of this variable
+    ses_response = send_email(recipient, SUBJECT, email_text)
+    
+    # ...
 
     # -----------------------------
-
 
     # ** Create a response object to inform the website that the 
     #    workflow executed successfully. Note that this object is 
