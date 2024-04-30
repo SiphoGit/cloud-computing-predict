@@ -26,7 +26,7 @@ from find_key_phrases import key_phrase_finder
 def email_response(name, critical_phrase_list, list_of_extracted_phrases, AWS_Comprehend_Sentiment_Dump):
 
     # Function Constants
-    SENDER_NAME = 'Sipho'
+    SENDER_NAME = 'Sipho Shimange.'
     
     # --- Check for the sentiment of the message and find dominant sentiment score ---
     Sentiment_finder = find_max_sentiment(AWS_Comprehend_Sentiment_Dump)
