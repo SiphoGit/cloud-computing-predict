@@ -126,7 +126,7 @@ def lambda_handler(event, context):
     # ** SES Functionality **
 
     # Send an email, using AWS SES, 
-    recipient = 'shimanges1@gmail.com'
+    recipient = 'edsa.predicts@explore-ai.net'
 
     # Do not modify the email subject line
     SUBJECT = f"Data Science Portfolio Project Website - Hello {dec_dict['name']}"
